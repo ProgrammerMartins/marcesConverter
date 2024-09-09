@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text Encoder/Decoder</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            width: 100%;
+        }
+
+        .container img{
+            width: 150px;
+            height: 100px;
+            margin-left: 35%;
+        }
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #333;
+            text-align: center;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        button {
+            background-color: #752020;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px 0;
+            width: 100%;
+        }
+
+        button:hover {
+            background-color: #882f2f;
+        }
+
+        #outputText {
+            background-color: #f9f9f9;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            white-space: pre-wrap;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img src="./Artify logo.png">
+        <textarea id="inputText" rows="4" placeholder="Enter your text here"></textarea>
+        <button onclick="convertText('encode')">Encode</button>
+        <button onclick="convertText('decode')">Decode</button>
+        <h3>Output:</h3>
+        <p id="outputText"></p>
+    </div>
+
+    <script>
+        function convertText(mode) {
+            const inputText = document.getElementById('inputText').value;
+            let outputText = '';
+
+            if (mode === 'encode') {
+                // Encoding: Convert vowels to numbers, append 'a' to consonants
+                for (let i = 0; i < inputText.length; i++) {
+                    let char = inputText[i];
+
+                    if (/[aeiouAEIOU]/.test(char)) {
+                        switch (char.toLowerCase()) {
+                            case 'a': outputText += '1'; break;
+                            case 'e': outputText += '2'; break;
+                            case 'i': outputText += '3'; break;
+                            case 'o': outputText += '4'; break;
+                            case 'u': outputText += '5'; break;
+                        }
+                    } else if (/[bcdfghjklmnpqrstvwxyz]/i.test(char)) {
+                        outputText += char + 'a';
+                    } else {
+                        outputText += char; // Keep spaces, punctuation, and numbers as they are
+                    }
+                }
+            } else if (mode === 'decode') {
+                // Decoding: Convert numbers back to vowels, remove 'a' after consonants
+                let i = 0;
+                while (i < inputText.length) {
+                    let char = inputText[i];
+
+                    if (/[12345]/.test(char)) {
+                        switch (char) {
+                            case '1': outputText += 'a'; break;
+                            case '2': outputText += 'e'; break;
+                            case '3': outputText += 'i'; break;
+                            case '4': outputText += 'o'; break;
+                            case '5': outputText += 'u'; break;
+                        }
+                        i++;
+                    } else if (/[bcdfghjklmnpqrstvwxyz]/i.test(char) && inputText[i + 1] === 'a') {
+                        outputText += char;
+                        i += 2; // Skip the 'a' that follows the consonant
+                    } else {
+                        outputText += char; // Keep spaces, punctuation, and numbers as they are
+                        i++;
+                    }
+                }
+            }
+
+            document.getElementById('outputText').innerText = outputText;
+        }
+    </script>
+</body>
+</html>
